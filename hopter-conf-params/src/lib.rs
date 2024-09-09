@@ -1,11 +1,10 @@
 //! This crate defines system configuration parameters for Hopter embedded
 //! operating system. Clients of Hopter can change them as needed.
 //!
-//! For the correctness of system functioning, make sure the following two
-//! parameters are correctly set.
+//! For the correctness of system functioning, make sure the following
+//! parameter is correctly set.
 //! - [`SYSTICK_FREQUENCY_HZ`] : Hopter depends on it to generate 1 millisecond
 //!   interval ticks.
-//! - [`RAM_END_ADDR`] : Hopter's heap region will end here.
 //!
 //! Names that are prefixed with single underscore are considered semi-private.
 //! One should not change it unless being familiar with Hopter kernel's source
@@ -55,8 +54,12 @@ pub const MAIN_TASK_INITIAL_STACK_SIZE: usize = 0;
 /// that the stack will be allocated completely dynamically.
 pub const _IDLE_TASK_INITIAL_STACK_SIZE: usize = 0;
 
+/// The length of the contiguous stack placed at the beginning of the RAM region.
+/// The value must match the one in `memory.x`.
+pub const _CONTIGUOUS_STACK_LENGTH: u32 = 0x1000;
+
 /// The bottom of the congituous stack.
-pub const _CONTIGUOUS_STACK_BOTTOM: u32 = 0x2000_1000;
+pub const _CONTIGUOUS_STACK_BOTTOM: u32 = 0x2000_0000 + _CONTIGUOUS_STACK_LENGTH;
 
 /// The boundary of the contiguous stack that its top should not grow beyond.
 pub const __CONTIGUOUS_STACK_BOUNDARY: u32 = 0x2000_0020;
