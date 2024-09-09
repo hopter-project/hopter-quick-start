@@ -51,6 +51,14 @@ type BlueLed = Pin<'D', 15, Output>;
 //    the standard practice when building embedded programs with Rust. See
 //    additional information aboud `memory.x` here:
 //    <https://docs.rust-embedded.org/book/start/hardware.html#configuring>
+//
+// 4. To change the kernel configuration parameters, clone the crate
+//    `hopter_conf_params` to a local directory, and override the dependency.
+//    See `Cargo.toml` for the override. For the override to be successful, the
+//    local version must have a large yet compatible semantic version number.
+//    See `hopter-conf-params/Cargo.toml` for an example. The compatibility
+//    rules are listed here:
+//    <https://doc.rust-lang.org/cargo/reference/resolver.html#semver-compatibility>
 
 // #################################
 // # Part 1: System Initialization #
