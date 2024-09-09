@@ -1,0 +1,27 @@
+[package]
+name = "hopter-quick-start"
+version = "0.1.0"
+edition = "2021"
+
+### Specifying Hopter Dependencies
+
+# Override the Hopter configuration parameters with local definitions.
+# The local version has a huge compatible semantic version number (0.1.1000)
+# so that it can can override the default values having a smaller semantic
+# version number.
+[patch."https://github.com/ZhiyaoMa98/hopter-conf-params.git"]
+hopter_conf_params = { path = "./hopter-conf-params" }
+
+[dependencies.hopter]
+git = "https://github.com/ZhiyaoMa98/hopter.git"
+tag = "v0.1.11"
+features = ["stm32f407"]
+
+### Specifying Other Dependencies
+
+[dependencies]
+cortex-m = "0.7.7"
+
+[dependencies.stm32f4xx-hal]
+version = "0.21.0"
+features = ["stm32f407"]
