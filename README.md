@@ -1,6 +1,6 @@
 # Hopter Quick Start Guide
 
-The tutorial demonstrates the key features of the [Hopter](https://github.com/ZhiyaoMa98/hopter) embedded operating system by blinking the four LEDs on [STM32F407-Discovery](https://www.st.com/en/evaluation-tools/stm32f4discovery.html) or [STM32F411-Discovery](https://www.st.com/en/evaluation-tools/32f411ediscovery.html) board. It covers essential topics, including:
+The tutorial demonstrates the key features of the [Hopter](https://github.com/hopter-project/hopter) embedded operating system by blinking the four LEDs on [STM32F407-Discovery](https://www.st.com/en/evaluation-tools/stm32f4discovery.html) or [STM32F411-Discovery](https://www.st.com/en/evaluation-tools/32f411ediscovery.html) board. It covers essential topics, including:
 
 - Project setup
 - System initialization and the `main` task
@@ -25,7 +25,7 @@ patch -p1 < stm32f411-discovery.patch
 
 ### Rust Compiler
 
-Hopter requires a customized Rust compiler toolchain. The easiest way to get it is by downloading a prebuilt version for your system. Follow the instructions [here](https://github.com/ZhiyaoMa98/hopter-compiler-toolchain).
+Hopter requires a customized Rust compiler toolchain. The easiest way to get it is by downloading a prebuilt version for your system. Follow the instructions [here](https://github.com/hopter-project/hopter-compiler-toolchain).
 
 ### Arm GNU Toolchain
 
