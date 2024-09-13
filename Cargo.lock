@@ -245,8 +245,9 @@ dependencies = [
 
 [[package]]
 name = "hopter"
-version = "0.1.12"
-source = "git+https://github.com/ZhiyaoMa98/hopter.git?tag=v0.1.12#b7bc72e335c5feb369ada008e6d90b24cbf921f8"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "524c63f027025944559fa4f87b03d20df92ccc05c4dbdee1b316344f78900f64"
 dependencies = [
  "concat-idents",
  "cortex-m",
@@ -276,12 +277,13 @@ dependencies = [
 
 [[package]]
 name = "hopter_conf_params"
-version = "0.1.1000"
+version = "0.2.1000"
 
 [[package]]
 name = "hopter_proc_macro"
-version = "0.1.7"
-source = "git+https://github.com/ZhiyaoMa98/hopter-procedural-macro.git?tag=v0.1.7#e349f5c8098b5b01b077371429317cd18d5e58a1"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20c8353caf6341a449980c6d7e52dff2cfc2d3289919760faffcb68254f20905"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -303,9 +305,9 @@ dependencies = [
 
 [[package]]
 name = "intrusive-collections"
-version = "0.9.6"
+version = "0.9.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b694dc9f70c3bda874626d2aed13b780f137aab435f4e9814121955cf706122e"
+checksum = "189d0897e4cbe8c75efedf3502c18c887b05046e59d28404d4d8e46cbc4d1e86"
 dependencies = [
  "memoffset",
 ]
@@ -536,9 +538,9 @@ checksum = "ef927ca75afb808a4d64dd374f00a2adf8d0fcff8e7b184af886c3c87ec4a3f3"
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.12"
+version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
+checksum = "e91b56cd4cadaeb79bbf1a5645f6b4f8dc5bde8834ad5894a8db35fda9efa1fe"
 
 [[package]]
 name = "vcell"

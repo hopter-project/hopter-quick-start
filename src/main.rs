@@ -39,7 +39,7 @@ type BlueLed = Pin<'D', 15, Output>;
 //    The file should contain a single line: "segstk-rust". This file instructs
 //    `cargo` to use the customized compiler toolchain. Do not forget to
 //    install it by following the instructions here:
-//    <https://github.com/ZhiyaoMa98/hopter-compiler-toolchain>
+//    <https://github.com/hopter-project/hopter-compiler-toolchain>
 //
 // 2. Build the `core` and `alloc` crate locally instead of using the prebuilt
 //    binary version. Also, enable unwinding upon panic. See the configuration

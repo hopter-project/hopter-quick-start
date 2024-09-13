@@ -5,4 +5,4 @@ edition = "2021"
 # Put a huge compatible semantic version number here so that the local
 # configuration parameter definition can override the default value having
 # a smaller semantic version number.
-version = "0.1.1000"
+version = "0.2.1000"

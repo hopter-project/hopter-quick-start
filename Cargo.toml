@@ -9,12 +9,11 @@ edition = "2021"
 # The local version has a huge compatible semantic version number (0.1.1000)
 # so that it can can override the default values having a smaller semantic
 # version number.
-[patch."https://github.com/ZhiyaoMa98/hopter-conf-params.git"]
+[patch.crates-io]
 hopter_conf_params = { path = "./hopter-conf-params" }
 
 [dependencies.hopter]
-git = "https://github.com/ZhiyaoMa98/hopter.git"
-tag = "v0.1.12"
+version = "0.2.0"
 features = ["stm32f407"]
 
 ### Specifying Other Dependencies
