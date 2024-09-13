@@ -1,11 +1,10 @@
-/* This is the memory layout for STM32F4-Discovery board. */
+/* This is the memory layout for STM32F407-Discovery board. */
 
 MEMORY
 {
-  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
-  CCMRAM (xrw) : ORIGIN = 0x10000000, LENGTH = 64K
-  FLASH (rx) : ORIGIN = 0x8000000, LENGTH = 1024K
   /* NOTE 1 K = 1 KiB = 1024 bytes */
+  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
+  FLASH (rx) : ORIGIN = 0x8000000, LENGTH = 1024K
 }
 
 /* Length of the contiguous stack placed at the beginning of the RAM region.

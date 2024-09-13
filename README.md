@@ -1,6 +1,6 @@
 # Hopter Quick Start Guide
 
-The tutorial demonstrates the key features of the [Hopter](https://github.com/ZhiyaoMa98/hopter) embedded operating system by blinking the four LEDs on [STM32F407-Discovery](https://www.st.com/en/evaluation-tools/stm32f4discovery.html) board. It covers essential topics, including:
+The tutorial demonstrates the key features of the [Hopter](https://github.com/ZhiyaoMa98/hopter) embedded operating system by blinking the four LEDs on [STM32F407-Discovery](https://www.st.com/en/evaluation-tools/stm32f4discovery.html) or [STM32F411-Discovery](https://www.st.com/en/evaluation-tools/32f411ediscovery.html) board. It covers essential topics, including:
 
 - Project setup
 - System initialization and the `main` task
@@ -12,6 +12,14 @@ The tutorial demonstrates the key features of the [Hopter](https://github.com/Zh
 The source code `src/main.rs` includes detailed explanations for each topic.
 
 This guide also serves as a good starting point for building your own projects.
+
+## Choosing a Board
+
+There is nothing to do if the code runs with STM32F407-Discovery board. For STM32F411-Discovery board, apply the following patch to the source code. The patch rewrites a few configuration parameters to match the STM32F411-Discovery board.
+
+```
+patch -p1 < stm32f411-discovery.patch
+```
 
 ## Prerequisite Installation
 
@@ -42,6 +50,6 @@ The tool `arm-none-eabi-objcopy` is needed to prepare the binary for flashing to
   sudo apt install stlink-tools
   ```
 
-## Flash the Board
+## Flashing the Board
 
 Run `cargo build --release` to compile the code. Run `cargo run --release` to flash the board.
