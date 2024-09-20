@@ -245,9 +245,9 @@ dependencies = [
 
 [[package]]
 name = "hopter"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "524c63f027025944559fa4f87b03d20df92ccc05c4dbdee1b316344f78900f64"
+checksum = "1b76fdb2608d8f9433ff7e232f377144d48f56673b8299b87a8215d9fb37cb0f"
 dependencies = [
  "concat-idents",
  "cortex-m",
