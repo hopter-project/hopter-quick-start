@@ -1,6 +1,6 @@
 # Hopter Quick Start Guide
 
-The tutorial demonstrates the key features of the [Hopter](https://github.com/hopter-project/hopter) embedded operating system by blinking the four LEDs on [STM32F407-Discovery](https://www.st.com/en/evaluation-tools/stm32f4discovery.html) or [STM32F411-Discovery](https://www.st.com/en/evaluation-tools/32f411ediscovery.html) board. It covers essential topics, including:
+The tutorial demonstrates the key features of the [Hopter](https://github.com/hopter-project/hopter) embedded operating system by blinking the four LEDs on [STM32F407-Discovery](https://www.st.com/en/evaluation-tools/stm32f4discovery.html), [STM32F411-Discovery](https://www.st.com/en/evaluation-tools/32f411ediscovery.html), or [STM32F412-Discovery](https://www.st.com/en/evaluation-tools/32f412gdiscovery.html) board. It covers essential topics, including:
 
 - Project setup
 - System initialization and the `main` task
@@ -15,7 +15,11 @@ This guide also serves as a good starting point for building your own projects.
 
 ## Choosing a Board
 
-There is nothing to do if the code runs with STM32F407-Discovery board. For STM32F411-Discovery board, apply the following patch to the source code. The patch rewrites a few configuration parameters to match the STM32F411-Discovery board.
+There is nothing to do if the code runs with an STM32F407-Discovery board.
+
+For an F411 or F412 board, apply the corresponding patch to the source code. The patch rewrites a few configuration parameters to match the chosen board.
+
+For example with F411, run the following command.
 
 ```
 patch -p1 < stm32f411-discovery.patch

@@ -13,7 +13,7 @@ edition = "2021"
 hopter_conf_params = { path = "./hopter-conf-params" }
 
 [dependencies.hopter]
-version = "0.2.2"
+version = "0.2.3"
 features = ["stm32f407"]
 
 ### Specifying Other Dependencies

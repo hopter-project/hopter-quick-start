@@ -1,0 +1,92 @@
+diff --color -urN hopter-quick-start-407/Cargo.toml hopter-quick-start/Cargo.toml
+--- hopter-quick-start-407/Cargo.toml	2024-09-27 21:49:43
++++ hopter-quick-start/Cargo.toml	2024-09-27 21:45:58
+@@ -14,7 +14,7 @@
+ 
+ [dependencies.hopter]
+ version = "0.2.3"
+-features = ["stm32f407"]
++features = ["stm32f412"]
+ 
+ ### Specifying Other Dependencies
+ 
+@@ -23,4 +23,4 @@
+ 
+ [dependencies.stm32f4xx-hal]
+ version = "0.21.0"
+-features = ["stm32f407"]
++features = ["stm32f412"]
+diff --color -urN hopter-quick-start-407/hopter-conf-params/src/lib.rs hopter-quick-start/hopter-conf-params/src/lib.rs
+--- hopter-quick-start-407/hopter-conf-params/src/lib.rs	2024-09-27 21:49:43
++++ hopter-quick-start/hopter-conf-params/src/lib.rs	2024-09-27 17:31:55
+@@ -21,7 +21,7 @@
+ /// The frequency of the SysTick timer clock. Must be set correctly because
+ /// Hopter relies on it to configure the SysTick counter to trigger the
+ /// interrupt at 1 millisecond interval.
+-pub const SYSTICK_FREQUENCY_HZ: u32 = 168_000_000;
++pub const SYSTICK_FREQUENCY_HZ: u32 = 100_000_000;
+ 
+ /* ############################ */
+ /* ### Stack Configurations ### */
+diff --color -urN hopter-quick-start-407/memory.x hopter-quick-start/memory.x
+--- hopter-quick-start-407/memory.x	2024-09-27 21:49:43
++++ hopter-quick-start/memory.x	2024-09-27 21:50:07
+@@ -1,9 +1,9 @@
+-/* This is the memory layout for STM32F407-Discovery board. */
++/* This is the memory layout for STM32F412-Discovery board. */
+ 
+ MEMORY
+ {
+   /* NOTE 1 K = 1 KiB = 1024 bytes */
+-  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
++  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 256K
+   FLASH (rx) : ORIGIN = 0x8000000, LENGTH = 1024K
+ }
+ 
+diff --color -urN hopter-quick-start-407/src/main.rs hopter-quick-start/src/main.rs
+--- hopter-quick-start-407/src/main.rs	2024-09-27 21:49:43
++++ hopter-quick-start/src/main.rs	2024-09-27 21:46:07
+@@ -22,10 +22,10 @@
+     timer::{CounterUs, Event},
+ };
+ 
+-type GreenLed = Pin<'D', 12, Output>;
+-type OrangeLed = Pin<'D', 13, Output>;
+-type RedLed = Pin<'D', 14, Output>;
+-type BlueLed = Pin<'D', 15, Output>;
++type GreenLed = Pin<'E', 0, Output>;
++type OrangeLed = Pin<'E', 1, Output>;
++type RedLed = Pin<'E', 2, Output>;
++type BlueLed = Pin<'E', 3, Output>;
+ 
+ // #################################
+ // # Part 0: Project Configuration #
+@@ -85,21 +85,21 @@
+     // Hopter uses other mechanisms to mask interrupts.
+     let dp = unsafe { stm32f4xx_hal::pac::Peripherals::steal() };
+ 
+-    // Bring the system clock to the maximum speed on STM32F407.
++    // Bring the system clock to the maximum speed on STM32F412.
+     let clocks = dp
+         .RCC
+         .constrain()
+         .cfgr
+         .use_hse(8.MHz())
+-        .sysclk(168.MHz())
++        .sysclk(100.MHz())
+         .freeze();
+ 
+     // Initialize the four LED lights.
+-    let gpiod = dp.GPIOD.split();
+-    let green_led = gpiod.pd12.into_push_pull_output();
+-    let orange_led = gpiod.pd13.into_push_pull_output();
+-    let red_led = gpiod.pd14.into_push_pull_output();
+-    let blue_led = gpiod.pd15.into_push_pull_output();
++    let gpioe = dp.GPIOE.split();
++    let green_led = gpioe.pe0.into_push_pull_output();
++    let orange_led = gpioe.pe1.into_push_pull_output();
++    let red_led = gpioe.pe2.into_push_pull_output();
++    let blue_led = gpioe.pe3.into_push_pull_output();
+ 
+     // ########################
+     // # Part 2: Spawn a Task #

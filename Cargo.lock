@@ -245,9 +245,9 @@ dependencies = [
 
 [[package]]
 name = "hopter"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b76fdb2608d8f9433ff7e232f377144d48f56673b8299b87a8215d9fb37cb0f"
+checksum = "e9cf0cb19a81bb535c7226d5bb7ed88fe69d4f7e3a06cb0ddb18d00f73fc8159"
 dependencies = [
  "concat-idents",
  "cortex-m",
@@ -281,9 +281,9 @@ version = "0.2.1000"
 
 [[package]]
 name = "hopter_proc_macro"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20c8353caf6341a449980c6d7e52dff2cfc2d3289919760faffcb68254f20905"
+checksum = "4f7a84b30d1346cb8db7b8667a68996c77b12f588d686abfb70825718930b805"
 dependencies = [
  "proc-macro2",
  "quote",

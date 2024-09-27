@@ -1,10 +1,10 @@
 diff --color -urN hopter-quick-start-407/Cargo.toml hopter-quick-start/Cargo.toml
---- hopter-quick-start-407/Cargo.toml	2024-09-20 12:23:34
-+++ hopter-quick-start/Cargo.toml	2024-09-20 12:24:17
+--- hopter-quick-start-407/Cargo.toml	2024-09-27 12:23:34
++++ hopter-quick-start/Cargo.toml	2024-09-27 12:24:17
 @@ -14,7 +14,7 @@
  
  [dependencies.hopter]
- version = "0.2.2"
+ version = "0.2.3"
 -features = ["stm32f407"]
 +features = ["stm32f411"]
  
@@ -17,8 +17,8 @@ diff --color -urN hopter-quick-start-407/Cargo.toml hopter-quick-start/Cargo.tom
 -features = ["stm32f407"]
 +features = ["stm32f411"]
 diff --color -urN hopter-quick-start-407/hopter-conf-params/src/lib.rs hopter-quick-start/hopter-conf-params/src/lib.rs
---- hopter-quick-start-407/hopter-conf-params/src/lib.rs	2024-09-20 12:23:35
-+++ hopter-quick-start/hopter-conf-params/src/lib.rs	2024-09-20 12:24:06
+--- hopter-quick-start-407/hopter-conf-params/src/lib.rs	2024-09-27 12:23:35
++++ hopter-quick-start/hopter-conf-params/src/lib.rs	2024-09-27 12:24:06
 @@ -21,7 +21,7 @@
  /// The frequency of the SysTick timer clock. Must be set correctly because
  /// Hopter relies on it to configure the SysTick counter to trigger the
@@ -29,8 +29,8 @@ diff --color -urN hopter-quick-start-407/hopter-conf-params/src/lib.rs hopter-qu
  /* ############################ */
  /* ### Stack Configurations ### */
 diff --color -urN hopter-quick-start-407/memory.x hopter-quick-start/memory.x
---- hopter-quick-start-407/memory.x	2024-09-20 12:23:34
-+++ hopter-quick-start/memory.x	2024-09-20 12:24:06
+--- hopter-quick-start-407/memory.x	2024-09-27 12:23:34
++++ hopter-quick-start/memory.x	2024-09-27 12:24:06
 @@ -1,10 +1,10 @@
 -/* This is the memory layout for STM32F407-Discovery board. */
 +/* This is the memory layout for STM32F411-Discovery board. */
@@ -45,8 +45,8 @@ diff --color -urN hopter-quick-start-407/memory.x hopter-quick-start/memory.x
  
  /* Length of the contiguous stack placed at the beginning of the RAM region.
 diff --color -urN hopter-quick-start-407/src/main.rs hopter-quick-start/src/main.rs
---- hopter-quick-start-407/src/main.rs	2024-09-20 12:23:35
-+++ hopter-quick-start/src/main.rs	2024-09-20 12:24:06
+--- hopter-quick-start-407/src/main.rs	2024-09-27 12:23:35
++++ hopter-quick-start/src/main.rs	2024-09-27 12:24:06
 @@ -85,13 +85,13 @@
      // Hopter uses other mechanisms to mask interrupts.
      let dp = unsafe { stm32f4xx_hal::pac::Peripherals::steal() };
