@@ -1,7 +1,8 @@
 #![no_std]
 #![no_main]
-// Required by `#[handler]` macro.
+// Required by the `#[handler]` macro.
 #![feature(naked_functions)]
+#![feature(asm_const)]
 
 extern crate alloc;
 
