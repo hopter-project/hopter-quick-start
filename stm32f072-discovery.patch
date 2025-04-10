@@ -1,0 +1,236 @@
+diff --color -urN hopter-quick-start-f407/.cargo/config.toml hopter-quick-start-f072/.cargo/config.toml
+--- hopter-quick-start-f407/.cargo/config.toml	2025-04-10 15:20:04
++++ hopter-quick-start-f072/.cargo/config.toml	2025-04-09 16:55:24
+@@ -1,5 +1,5 @@
+ # Let `cargo run` invoke the flash script.
+-[target.thumbv7em-none-eabihf]
++[target.thumbv6m-none-eabi]
+ runner = "./flash-board.sh"
+ 
+ rustflags = [
+@@ -26,7 +26,8 @@
+ 
+ # Currently Hopter only supports this target.
+ [build]
+-target = "thumbv7em-none-eabihf" # Cortex-M4F and Cortex-M7F (with FPU)
++target = "thumbv6m-none-eabi" # Cortex-M0
+ 
+ [profile.release]
+ opt-level = 3
++debug = true
+diff --color -urN hopter-quick-start-f407/Cargo.toml hopter-quick-start-f072/Cargo.toml
+--- hopter-quick-start-f407/Cargo.toml	2025-04-10 15:20:04
++++ hopter-quick-start-f072/Cargo.toml	2025-04-10 15:03:50
+@@ -14,13 +14,13 @@
+ 
+ [dependencies.hopter]
+ version = "0.3.1"
+-features = ["stm32f407"]
++features = ["stm32f072"]
+ 
+ ### Specifying Other Dependencies
+ 
+ [dependencies]
+ cortex-m = "0.7.7"
+ 
+-[dependencies.stm32f4xx-hal]
+-version = "0.21.0"
+-features = ["stm32f407"]
++[dependencies.stm32f0xx-hal]
++version = "0.18.0"
++features = ["stm32f072"]
+diff --color -urN hopter-quick-start-f407/flash-board.sh hopter-quick-start-f072/flash-board.sh
+--- hopter-quick-start-f407/flash-board.sh	2025-04-10 15:20:04
++++ hopter-quick-start-f072/flash-board.sh	2025-04-10 14:56:36
+@@ -2,4 +2,4 @@
+ set -e
+ 
+ # Flash the binary to the board
+-openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program $1 verify reset exit"
++openocd -f interface/stlink.cfg -f target/stm32f0x.cfg -c "program $1 verify reset exit"
+diff --color -urN hopter-quick-start-f407/memory.x hopter-quick-start-f072/memory.x
+--- hopter-quick-start-f407/memory.x	2025-04-10 15:20:04
++++ hopter-quick-start-f072/memory.x	2025-04-09 17:08:09
+@@ -1,12 +1,12 @@
+-/* This is the memory layout for STM32F407-Discovery board. */
++/* This is the memory layout for STM32F072-Discovery board. */
+ 
+ MEMORY
+ {
+   /* NOTE 1 K = 1 KiB = 1024 bytes */
+-  RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
+-  FLASH (rx) : ORIGIN = 0x8000000, LENGTH = 1024K
++  FLASH : ORIGIN = 0x8000000, LENGTH = 128K
++  RAM : ORIGIN = 0x20000000, LENGTH = 16K
+ }
+ 
+ /* Length of the contiguous stack placed at the beginning of the RAM region.
+    The value must match the one in Hopter configuration parameters. */
+-_contiguous_stack_length = 0x1000;
++_contiguous_stack_length = 0x400;
+diff --color -urN hopter-quick-start-f407/src/main.rs hopter-quick-start-f072/src/main.rs
+--- hopter-quick-start-f407/src/main.rs	2025-04-10 15:20:04
++++ hopter-quick-start-f072/src/main.rs	2025-04-10 15:12:58
+@@ -1,6 +1,6 @@
+ #![no_std]
+ #![no_main]
+-// Required by the `#[handler]` macro.
++// Required by `#[handler]` macro.
+ #![feature(naked_functions)]
+ #![feature(asm_const)]
+ 
+@@ -14,19 +14,23 @@
+     task::{self, main},
+     time::IntervalBarrier,
+ };
+-use stm32f4xx_hal::{
++
++use stm32f0xx_hal::{
+     self,
+-    gpio::{Output, Pin},
++    gpio::{
++        gpioc::{PC6, PC7, PC8, PC9},
++        Output, PushPull,
++    },
+     pac::TIM2,
+     prelude::*,
+-    rcc::RccExt,
+-    timer::{CounterUs, Event},
++    time::Hertz,
++    timers::{Event, Timer},
+ };
+ 
+-type GreenLed = Pin<'D', 12, Output>;
+-type OrangeLed = Pin<'D', 13, Output>;
+-type RedLed = Pin<'D', 14, Output>;
+-type BlueLed = Pin<'D', 15, Output>;
++type RedLed = PC6<Output<PushPull>>;
++type BlueLed = PC7<Output<PushPull>>;
++type OrangeLed = PC8<Output<PushPull>>;
++type GreenLed = PC9<Output<PushPull>>;
+ 
+ // #################################
+ // # Part 0: Project Configuration #
+@@ -84,23 +88,32 @@
+     // extend a function call stack via SVC, which leads to a hard fault when
+     // `cpsid i` is in effect. Use `steal()` here to circumvent the problem.
+     // Hopter uses other mechanisms to mask interrupts.
+-    let dp = unsafe { stm32f4xx_hal::pac::Peripherals::steal() };
++    let mut dp = unsafe { stm32f0xx_hal::pac::Peripherals::steal() };
+ 
+-    // Bring the system clock to the maximum speed on STM32F407.
+-    let clocks = dp
+-        .RCC
+-        .constrain()
+-        .cfgr
+-        .use_hse(8.MHz())
+-        .sysclk(168.MHz())
+-        .freeze();
++    let mut rcc = dp.RCC.configure().sysclk(48.mhz()).freeze(&mut dp.FLASH);
+ 
+     // Initialize the four LED lights.
+-    let gpiod = dp.GPIOD.split();
+-    let green_led = gpiod.pd12.into_push_pull_output();
+-    let orange_led = gpiod.pd13.into_push_pull_output();
+-    let red_led = gpiod.pd14.into_push_pull_output();
+-    let blue_led = gpiod.pd15.into_push_pull_output();
++    let gpioc = dp.GPIOC.split(&mut rcc);
++    let red_led;
++    let blue_led;
++    let orange_led;
++    let green_led;
++    {
++        // Forcefully create a critical section token `cs`. Normally, this
++        // token is created by using `cortex_m::interrupt::free(...)`. However,
++        // `free(...)` also masks interrupts using the `cpsid i` instruction.
++        // Therefore, we must refrain from using `free(...)` unless we are
++        // absolutely certain that the stack will not overflow or need
++        // extension. On the other hand, since we are initializing the
++        // peripheral, we know that there will not be race conditions on GPIOC.
++        // We thus create a dummy critical section token to satisfy the API
++        // without introducing any race conditions.
++        let cs = unsafe { cortex_m::interrupt::CriticalSection::new() };
++        red_led = gpioc.pc6.into_push_pull_output(&cs);
++        blue_led = gpioc.pc7.into_push_pull_output(&cs);
++        orange_led = gpioc.pc8.into_push_pull_output(&cs);
++        green_led = gpioc.pc9.into_push_pull_output(&cs);
++    }
+ 
+     // ########################
+     // # Part 2: Spawn a Task #
+@@ -137,7 +150,7 @@
+             // away the interval when the system is under load.
+             barrier.wait();
+ 
+-            green_led.toggle();
++            green_led.toggle().unwrap();
+         }
+     }
+ 
+@@ -189,7 +202,7 @@
+ 
+         loop {
+             barrier.wait();
+-            orange_led.toggle();
++            orange_led.toggle().unwrap();
+ 
+             // Panic every 10 loop cycles. Since the task is restartable, the
+             // LED appears to blink just as normal.
+@@ -246,7 +259,7 @@
+             barrier: IntervalBarrier::new(500).unwrap(),
+         })
+         .set_wait(|ctxt| ctxt.barrier.wait())
+-        .set_work(|ctxt, _| ctxt.red_led.lock().toggle())
++        .set_work(|ctxt, _| ctxt.red_led.lock().toggle().unwrap())
+         .spawn_restartable()
+         .unwrap();
+ 
+@@ -257,9 +270,8 @@
+     // See Part 5B for more descriptions.
+ 
+     // Initialize the TIM2 timer to trigger an IRQ every 500 ms.
+-    let mut timer = dp.TIM2.counter(&clocks);
+-    timer.listen(Event::Update);
+-    timer.start(500.millis()).unwrap();
++    let mut timer = Timer::tim2(dp.TIM2, Hertz(2), &mut rcc);
++    timer.listen(Event::TimeOut);
+ 
+     // Put the timer to the global variable so the IRQ handler can access it.
+     *TIMER.lock() = Some(timer);
+@@ -267,10 +279,10 @@
+     // Set a priority TIM2 IRQ and unmask it.
+     unsafe {
+         cp.NVIC.set_priority(
+-            stm32f4xx_hal::pac::interrupt::TIM2,
++            stm32f0xx_hal::pac::interrupt::TIM2,
+             config::IRQ_MAX_PRIORITY,
+         );
+-        cortex_m::peripheral::NVIC::unmask(stm32f4xx_hal::pac::interrupt::TIM2);
++        cortex_m::peripheral::NVIC::unmask(stm32f0xx_hal::pac::interrupt::TIM2);
+     }
+ 
+     // Spawn a task that wait for the signal from the IRQ to blink the LED.
+@@ -281,8 +293,8 @@
+ 
+     fn blink_blue(mut blue_led: BlueLed) {
+         loop {
++            blue_led.toggle().unwrap();
+             MAILBOX.wait();
+-            blue_led.toggle();
+         }
+     }
+ 
+@@ -351,11 +363,11 @@
+ // handler will be forced to return with resources reclaimed.
+ 
+ // Generate the `Tim2Irq` type that represents the TIM2 IRQ.
+-irq!(Tim2Irq, stm32f4xx_hal::pac::interrupt::TIM2);
++irq!(Tim2Irq, stm32f0xx_hal::pac::interrupt::TIM2);
+ 
+ // The global `TIMER` variable is protected by the spin lock. TIM2 IRQ will be
+ // masked when the lock is acquired.
+-static TIMER: SpinIrqSafe<Option<CounterUs<TIM2>>, Tim2Irq> = SpinIrqSafe::new(None);
++static TIMER: SpinIrqSafe<Option<Timer<TIM2>>, Tim2Irq> = SpinIrqSafe::new(None);
+ 
+ // Provide synchronization between the IRQ handler and the task.
+ static MAILBOX: Mailbox = Mailbox::new();
