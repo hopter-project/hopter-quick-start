@@ -1,3 +1,4 @@
 /target
 /hopter-conf-params/target
-*.bin
+Cargo.lock
+
