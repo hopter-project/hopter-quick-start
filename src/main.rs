@@ -80,7 +80,7 @@ type BlueLed = Pin<'D', 15, Output>;
 #[main]
 fn main(mut cp: cortex_m::Peripherals) {
     // Acquire the board peripherals. Must not use `take()` because it
-    // internally masks interrupts using `cpsid i` instruction. Hopter may
+    // internally masks interrupts using the `cpsid i` instruction. Hopter may
     // extend a function call stack via SVC, which leads to a hard fault when
     // `cpsid i` is in effect. Use `steal()` here to circumvent the problem.
     // Hopter uses other mechanisms to mask interrupts.
@@ -174,14 +174,17 @@ fn main(mut cp: cortex_m::Peripherals) {
     // Move the LED behind an `Arc`, so that the entry closure becomes `Clone`.
     let orange_led = Arc::new(Mutex::new(orange_led));
 
+    // Also store the barrier object behind an `Arc`. The barrier will persist
+    // across task restarts, so the interval will not drift away across restarts.
+    let barrier = Arc::new(Mutex::new(IntervalBarrier::new(500).unwrap()));
+
     // Spawn the task as a restartable one.
     task::build()
-        .set_entry(move || blink_orange(&mut *orange_led.lock()))
+        .set_entry(move || blink_orange(&mut *orange_led.lock(), &mut *barrier.lock()))
         .spawn_restartable()
         .unwrap();
 
-    fn blink_orange(orange_led: &mut OrangeLed) {
-        let mut barrier = IntervalBarrier::new(500).unwrap();
+    fn blink_orange(orange_led: &mut OrangeLed, barrier: &mut IntervalBarrier) {
         let mut cnt = 0;
 
         loop {
@@ -263,7 +266,10 @@ fn main(mut cp: cortex_m::Peripherals) {
 
     // Set a priority TIM2 IRQ and unmask it.
     unsafe {
-        cp.NVIC.set_priority(stm32f4xx_hal::pac::interrupt::TIM2, 0);
+        cp.NVIC.set_priority(
+            stm32f4xx_hal::pac::interrupt::TIM2,
+            config::IRQ_MAX_PRIORITY,
+        );
         cortex_m::peripheral::NVIC::unmask(stm32f4xx_hal::pac::interrupt::TIM2);
     }
 
@@ -302,7 +308,7 @@ fn main(mut cp: cortex_m::Peripherals) {
 
     task::build()
         // Set a stack size limit for the task.
-        .set_stack_limit(4096)
+        .set_stack_limit(256)
         // Make the task higher priority than other tasks. Smaller numerical
         // value represents higher priority. If the task hangs up, it will
         // prevent other LED blinking tasks from running. But Hopter will
