@@ -1,3 +1,5 @@
+<img src="./.github/assets/hopter-logo.png" alt="Hopter's Logo" width="400"/>
+
 # Hopter Quick Start Guide
 
 This tutorial demonstrates the key features of the [Hopter](https://github.com/hopter-project/hopter) embedded operating system by blinking the four LEDs on a development board.
